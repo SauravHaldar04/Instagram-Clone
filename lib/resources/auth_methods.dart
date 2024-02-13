@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/user_model.dart' as model;
 import 'package:instagram_clone/resources/storage_methods.dart';
 import 'package:instagram_clone/utils/utils.dart';
 
@@ -27,15 +28,19 @@ class AuthMethods {
         print(userCredential.user!.uid);
         String profilepic =
             await StorageMethods().uploadImage('profilepics', file, false);
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
-          'username': username,
-          'email': email,
-          'uid': userCredential.user!.uid,
-          'bio': bio,
-          'followers': [],
-          'following': [],
-          'profilepic': profilepic
-        });
+
+        model.User user = model.User(
+            uid: userCredential.user!.uid,
+            email: email,
+            username: username,
+            bio: bio,
+            profilepic: profilepic,
+            followers: [],
+            following: []);
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set(user.toJson());
         res = "Success";
       } else {
         res = 'Please enter all the fields';
@@ -65,5 +70,16 @@ class AuthMethods {
     } catch (err) {
       return err.toString();
     }
+  }
+
+  Future<model.User> getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+    print(currentUser.email);
+    DocumentSnapshot snap =
+        await _firestore.collection('users').doc(currentUser.uid).get();
+
+    // print((snap.data() as Map<String, dynamic>)['username'] as String);
+
+    return model.User.fromSnap(snap);
   }
 }
