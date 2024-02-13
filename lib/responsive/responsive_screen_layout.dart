@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
-import 'package:instagram_clone/responsive/dimensions.dart';
+import 'package:instagram_clone/responsive/global_variables.dart';
 import 'package:provider/provider.dart';
 
 class LayoutScreen extends StatefulWidget {

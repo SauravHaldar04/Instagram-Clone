@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/models/user_model.dart' as model;
+import 'package:instagram_clone/responsive/global_variables.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:provider/provider.dart';
 
@@ -15,19 +16,12 @@ class MobileScreenLayout extends StatefulWidget {
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   int _currentIndex = 0;
-  List<Widget> _pages = [
-    Text('feed'),
-    Text('search'),
-    Text('post'),
-    Text('likes'),
-    Text('profile'),
-  ];
 
   @override
   Widget build(BuildContext context) {
     model.User user = Provider.of<UserProvider>(context).getUser();
     return Scaffold(
-      body: Center(child: _pages[_currentIndex]),
+      body: Center(child: pages[_currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (int index) {
