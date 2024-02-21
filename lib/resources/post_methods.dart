@@ -30,11 +30,27 @@ class PostMethods {
           postId: postId,
           username: username,
           profileImage: profileImage);
-      _firestore.collection('posts').add(posts.toJson());
+      _firestore.collection('posts').doc(postId).set(posts.toJson());
       res = 'Post successfull';
     } catch (err) {
       return err.toString();
     }
     return res;
+  }
+
+  Future<void> likePost(String postId, String uid, List likes) async {
+    try {
+      if (likes.contains(uid)) {
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayRemove([uid]),
+        });
+      } else {
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayUnion([uid]),
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
