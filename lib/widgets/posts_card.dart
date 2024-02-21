@@ -7,6 +7,7 @@ import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/resources/post_methods.dart';
 import 'package:instagram_clone/screens/comments_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +59,13 @@ class _PostsCardState extends State<PostsCard> {
                                   shrinkWrap: true,
                                   children: ['Delete']
                                       .map((e) => InkWell(
+                                            onTap: () async {
+                                              String res = await PostMethods()
+                                                  .deletePosts(
+                                                      widget.snap['postId']);
+                                              Navigator.of(context).pop();
+                                              showSnackBar(context, res);
+                                            },
                                             child: Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
