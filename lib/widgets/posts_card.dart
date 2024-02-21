@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/models/user_model.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/resources/post_methods.dart';
+import 'package:instagram_clone/screens/comments_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +25,7 @@ class _PostsCardState extends State<PostsCard> {
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser();
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Column(
         children: [
           Padding(
@@ -39,7 +40,7 @@ class _PostsCardState extends State<PostsCard> {
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
                       widget.snap['username'],
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: primaryColor, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -58,8 +59,10 @@ class _PostsCardState extends State<PostsCard> {
                                   children: ['Delete']
                                       .map((e) => InkWell(
                                             child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 10, horizontal: 16),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 16),
                                               child: Text(e),
                                             ),
                                           ))
@@ -67,7 +70,7 @@ class _PostsCardState extends State<PostsCard> {
                                 ),
                               ));
                     },
-                    icon: Icon(Icons.more_vert))
+                    icon: const Icon(Icons.more_vert))
               ],
             ),
           ),
@@ -89,7 +92,7 @@ class _PostsCardState extends State<PostsCard> {
                 ),
               ),
               AnimatedOpacity(
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 opacity: isLikeAnimating ? 1 : 0,
                 child: LikeAnimation(
                   onEnd: () {
@@ -97,13 +100,13 @@ class _PostsCardState extends State<PostsCard> {
                       isLikeAnimating = false;
                     });
                   },
-                  child: Icon(
+                  isAnimating: isLikeAnimating,
+                  duration: const Duration(milliseconds: 400),
+                  child: const Icon(
                     Icons.favorite,
                     color: Colors.white,
                     size: 120,
                   ),
-                  isAnimating: isLikeAnimating,
-                  duration: const Duration(milliseconds: 400),
                 ),
               )
             ]),
@@ -120,26 +123,34 @@ class _PostsCardState extends State<PostsCard> {
                           user.uid, widget.snap['likes']);
                     },
                     icon: widget.snap['likes'].contains(user.uid)
-                        ? Icon(
+                        ? const Icon(
                             Icons.favorite,
                             color: Colors.red,
                           )
-                        : Icon(Icons.favorite_border)),
+                        : const Icon(Icons.favorite_border)),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => CommentsScreen(
+                        snap: widget.snap,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.comment),
               ),
               IconButton(
                 onPressed: () {},
-                icon: Icon(Icons.comment),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.send),
+                icon: const Icon(Icons.send),
               ),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: IconButton(
                     onPressed: () {},
-                    icon: Icon(Icons.bookmark_outline),
+                    icon: const Icon(Icons.bookmark_outline),
                   ),
                 ),
               )
@@ -152,7 +163,7 @@ class _PostsCardState extends State<PostsCard> {
               DefaultTextStyle(
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle2!
+                    .bodySmall!
                     .copyWith(fontWeight: FontWeight.bold),
                 child: Text(
                   '${widget.snap['likes'].length} likes',
@@ -164,7 +175,7 @@ class _PostsCardState extends State<PostsCard> {
                   padding: const EdgeInsets.only(top: 8),
                   child: RichText(
                     text: TextSpan(
-                        style: TextStyle(color: primaryColor),
+                        style: const TextStyle(color: primaryColor),
                         children: [
                           TextSpan(
                               text: widget.snap['username'],
