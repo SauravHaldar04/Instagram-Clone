@@ -22,16 +22,25 @@ class _AddPostScreenState extends State<AddPostScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   bool isLoading = false;
 
-  postImage() async {
+  postImage(String uid, String username, String profileImage) async {
     setState(() {
       isLoading = true;
     });
-    String res = await PostMethods()
-        .postImage(post: _file!, description: _descriptionController.text);
+    String res = await PostMethods().postImage(
+        post: _file!,
+        description: _descriptionController.text,
+        uid: uid,
+        username: username,
+        profileImage: profileImage);
     setState(() {
       isLoading = false;
     });
     showSnackBar(context, res);
+    clearImage();
+  }
+
+  void clearImage() {
+    _file = null;
   }
 
   selectImage(BuildContext context) {
@@ -91,13 +100,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    clearImage();
+                  });
+                },
               ),
               title: const Text("Post to"),
               actions: [
                 TextButton(
                     onPressed: () {
-                      postImage();
+                      postImage(user.uid, user.username, user.profilepic);
                     },
                     child: const Text(
                       'Post',
@@ -107,8 +120,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             body: Column(
               children: [
-                if(isLoading)
-                const LinearProgressIndicator(),
+                if (isLoading) const LinearProgressIndicator(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
