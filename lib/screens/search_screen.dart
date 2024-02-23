@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_clone/screens/profile_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -48,12 +49,23 @@ class _SearchScreenState extends State<SearchScreen> {
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              snapshot.data!.docs[index]['profilepic']),
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ProfileScreen(
+                                uid: snapshot.data!.docs[index]['uid'],
+                              ),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                snapshot.data!.docs[index]['profilepic']),
+                          ),
+                          title: Text(snapshot.data!.docs[index]['username']),
                         ),
-                        title: Text(snapshot.data!.docs[index]['username']),
                       );
                     },
                   );
@@ -67,19 +79,21 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  return StaggeredGrid.count(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      children: [
-                        for (int i = 0; i < snapshot.data!.docs.length; i++)
-                          StaggeredGridTile.count(
+                  return SingleChildScrollView(
+                    child: StaggeredGrid.count(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        children: [
+                          for (int i = 0; i < snapshot.data!.docs.length; i++)
+                            StaggeredGridTile.count(
                               crossAxisCellCount: (i % 7 == 0) ? 2 : 1,
                               mainAxisCellCount: (i % 7 == 0) ? 2 : 1,
                               child: Image.network(
                                   snapshot.data!.docs[i]['postUrl']),
-                                  ),
-                      ]);
+                            ),
+                        ]),
+                  );
                 },
               ));
   }
